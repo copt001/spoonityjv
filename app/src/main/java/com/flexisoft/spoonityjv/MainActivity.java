@@ -2,6 +2,7 @@ package com.flexisoft.spoonityjv;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
@@ -25,7 +26,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity  {
+public class MainActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = "spoonityjvAPP";
     private EditText etIdentificacion;
@@ -78,7 +79,7 @@ public class MainActivity extends AppCompatActivity  {
         } else {
             tvRespuesta.setText("No llego nada");
         }*/
-        etIdentificacion.setText("70852351");
+        //etIdentificacion.setText("70852351");
 
 
     }
@@ -123,13 +124,15 @@ public class MainActivity extends AppCompatActivity  {
                     onscreen resp = response.body();
                     Log.d("on Response onscreeen", "tamaño " + resp.toString());
                     consultaPuntos(resp.getPos_session().getHash().toString());
+                }else{
+                    tvRespuesta.setText("Error al capturar respuesta");
                 }
             }
 
 
             @Override
             public void onFailure(Call<onscreen> call, Throwable t) {
-
+                tvRespuesta.setText("No se pudo conectar al servicio");
             }
         });
 
@@ -144,20 +147,26 @@ public class MainActivity extends AppCompatActivity  {
                 if (response.isSuccessful()) {
                     onscreenCardNumber resp = response.body();
                     Log.d("on Response onscreeen", "tamaño " + resp.toString());
-                    List<data> data=resp.getLoyalty_balance().getData();
-                    tvRespuesta.setText("Puntos: "+resp.getLoyalty_balance().getData().get(0).getAmount().toString());
+                    List<data> data = resp.getLoyalty_balance().getData();
+                    tvRespuesta.setText("Puntos: " + resp.getLoyalty_balance().getData().get(0).getAmount().toString());
+                }else{
+                    tvRespuesta.setText("Error al capturar respuesta");
                 }
             }
 
             @Override
             public void onFailure(Call<onscreenCardNumber> call, Throwable t) {
-
+                tvRespuesta.setText("No se pudo conectar al servicio");
             }
         });
 
     }
 
-
+    public void onExit(View view) {
+        Intent resultIntent = new Intent(getIntent().getAction());
+        setResult(RESULT_OK, resultIntent);
+        finish();
+    }
 
 
    /* private class TareaWSOnScreen extends AsyncTask<String, Integer, String> {
